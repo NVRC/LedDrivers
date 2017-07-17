@@ -2,7 +2,6 @@
 """
 Requires Python 2.7
 """
-import sys
 import gradientHelpers as gh
 from dotstar import Adafruit_DotStar
 
@@ -10,6 +9,10 @@ from dotstar import Adafruit_DotStar
 CONST_NUMLEDS = 60
 #Init default brightness
 BRIGHTNESS_CONSTANT = 255
+
+strip = Adafruit_DotStar(CONST_NUMLEDS)
+strip.begin()
+
 
 def dotstarlib_correction(color):
     """
@@ -76,21 +79,23 @@ def polylinear_gradient(colors, number_of_leds):
 
     return gradient_dict
 
+def display(arg):
+
+    list_len = len(arg)
+
+    colors = []
+    for index in range(list_len-2):
+        colors.append("%s%s" % ('#',arg[index+1]))
+
+    BRIGHTNESS_CONSTANT = int(arg[list_len-1])
+
+    strip.setBrightness(BRIGHTNESS_CONSTANT)
+
+    hex_color_list = polylinear_gradient(colors,CONST_NUMLEDS)
+
+    led_output(hex_color_list)
 
 
-strip = Adafruit_DotStar(CONST_NUMLEDS)
-strip.begin()
-
-list_len = len(sys.argv)
-
-colors = []
-for index in range(list_len-2):
-    colors.append("%s%s" % ('#',sys.argv[index+1]))
-
-BRIGHTNESS_CONSTANT = int(sys.argv[list_len-1])
-
-strip.setBrightness(BRIGHTNESS_CONSTANT)
-
-hex_color_list = polylinear_gradient(colors,CONST_NUMLEDS)
-
-led_output(hex_color_list)
+if __name__ == '__main__':
+    import sys
+    display(sys.argv[1:])
