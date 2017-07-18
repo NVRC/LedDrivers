@@ -100,7 +100,9 @@ def polylinear_gradient(colors, number_of_leds):
     return gradient_dict
 
 def display(arg):
+    led_output(parseArgs(arg))
 
+def parseArgs(arg):
     #Parse arguments
     list_len = len(arg)
     colors = []
@@ -111,9 +113,10 @@ def display(arg):
 
     strip.setBrightness(_brightness_global_var)
 
-    hex_color_list = polylinear_gradient(colors,CONST_NUMLEDS)
+    return polylinear_gradient(colors,CONST_NUMLEDS)
 
-    led_output(hex_color_list)
+def getColorList(arg):
+    return parseArgs(arg)
 
 
 if __name__ == '__main__':

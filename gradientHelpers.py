@@ -1,3 +1,5 @@
+from collections import deque
+
 def hex_to_rgb(value):
     """Return (red, green, blue) for the color given as #rrggbb."""
     value = value.lstrip('#')
@@ -24,3 +26,6 @@ def hex_to_rgb_list(colors):
         rgb_list.append(hex_to_rgb(color))
 
     return rgb_list
+
+def getShiftedColors(colors):
+    return deque(colors).rotate(1)
