@@ -21,7 +21,6 @@ _brightness_global_var = 255
 strip = Adafruit_DotStar(CONST_NUMLEDS)
 strip.begin()
 
-
 def dotstarlib_correction(color):
     """
     The Adafruit_DotStar library for some , I'm sure, mundanely disinteresting
@@ -36,9 +35,6 @@ def dotstarlib_correction(color):
 
     corrected_color = swap(color,1,3)
     return swap(corrected_color,2,4)
-
-
-
 
 def led_output(color_list):
     """ Sets every LED in the strip to it's list mapped color.
@@ -100,9 +96,9 @@ def polylinear_gradient(colors, number_of_leds):
     return gradient_dict
 
 def display(arg):
-    led_output(parseArgs(arg))
+    led_output(getColorList(arg))
 
-def parseArgs(arg):
+def getColorList(arg):
     #Parse arguments
     list_len = len(arg)
     colors = []
@@ -110,13 +106,9 @@ def parseArgs(arg):
         colors.append("%s%s" % ('#',arg[index+1]))
 
     _brightness_global_var = int(arg[list_len-1])
-
     strip.setBrightness(_brightness_global_var)
 
     return polylinear_gradient(colors,CONST_NUMLEDS)
-
-def getColorList(arg):
-    return parseArgs(arg)
 
 
 if __name__ == '__main__':
