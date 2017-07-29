@@ -1,49 +1,55 @@
 import nLevelLinearGradient as lg
 import gradientHelpers as gh
 import threading
+import time
 from appJar import gui
 
 class linearGradientWrapper:
 
     def __init__(self):
         self.initColorList = []
-        self.nextColorList = []
-        self.brightness = ['255']
-        self.TIMER_CONSTANT = 1
+        self.segmentColorList = []
+        self.brightness = 255
+        self.TIMER_CONSTANT = 0.1
 
-    @staticmethod
-    def addRGB(r,g,b):
+    def addRGB(self, r, g, b):
         hex = gh.rgb_to_hex(r,g,b)
         self.initColorList.append(hex[1:])
         pass
 
-    @staticmethod
-    def addHEX(hex):
+
+    def addHEX(self, hex):
         self.initColorList.append(hex)
         pass
 
-    @staticmethod
-    def setBrightness(brightness):
+
+    def setBrightness(self, brightness):
         self.brightness = brightness
         pass
 
-    def display():
-        list = initColorList
-        list.append(brightness)
-        lg.display(getArgs())
+    def display(self):
+        lg.display(getArgs(self))
         pass
 
-    def getArgs():
-        list = initColorList
-        return list.append(brightness)
+    def getArgs(self):
+        list = self.initColorList[:]
+        list.append(self.brightness)
+        return list
 
-    def cycle():
-        nextColorList = lg.getColorList(getArgs())
-        threading.Timer(self.TIMER_CONSTANT,cycleLoop).start
+    def cycle(self):
+        print("Linear Gradient Wrapper: executing a cyclical gradient")
+        #Append the first color so that the cyclical gradient is linear.
+        self.initColorList.append(self.initColorList[0])
+        init = self.getArgs()
+        next = lg.getColorList(init)
+
+        while(True):
+            next = gh.getShiftedColors(next)
+            lg.led_output(next)
+            time.sleep(self.TIMER_CONSTANT)
         pass
 
-    def cycleLoop():
-        lg.led_output(nextColorList)
-        nextColorList = gh.getShiftedColors(nextColorList)
-        cycleLoop()
+
+    def printColorList(self):
+        print("Current Color List: ",self.initColorList)
         pass

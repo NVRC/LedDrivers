@@ -58,6 +58,8 @@ def linear_gradient(start_hex, finish_hex, number_of_leds):
     finish = gh.hex_to_rgb(finish_hex)
 
     hex_list = []
+
+
     hex_list.append(dotstarlib_correction(start_hex))
 
     for index in range(1, number_of_leds):
@@ -102,8 +104,8 @@ def getColorList(arg):
     #Parse arguments
     list_len = len(arg)
     colors = []
-    for index in range(list_len-2):
-        colors.append("%s%s" % ('#',arg[index+1]))
+    for index in range(list_len-1):
+        colors.append("%s%s" % ('#',arg[index]))
 
     _brightness_global_var = int(arg[list_len-1])
     strip.setBrightness(_brightness_global_var)

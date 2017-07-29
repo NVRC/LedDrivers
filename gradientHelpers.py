@@ -28,4 +28,8 @@ def hex_to_rgb_list(colors):
     return rgb_list
 
 def getShiftedColors(colors):
-    return deque(colors).rotate(1)
+    return rotate(colors, 1)
+
+
+def rotate(l, n):
+    return l[n:] + l[:n]
