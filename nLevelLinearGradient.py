@@ -101,6 +101,9 @@ def display(arg):
     led_output(getColorList(arg))
 
 def getColorList(arg):
+    """ Returns a gradient list of hex colors based off the supplied arguments.
+        ('hexColor','hexColor',brightness)
+    """
     #Parse arguments
     list_len = len(arg)
     colors = []
