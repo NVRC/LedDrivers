@@ -5,7 +5,6 @@ import threading
 import time
 from appJar import gui
 
-
 class linearGradientWrapper:
 
     def __init__(self):
@@ -13,6 +12,7 @@ class linearGradientWrapper:
         self.segmentColorList = []
         self.brightness = 255
         self.TIMER_CONSTANT = 0.1
+        self.LED_CONSTANT = 60
 
     def addRGB(self, r, g, b):
         hex = gh.rgb_to_hex(r,g,b)
@@ -51,18 +51,17 @@ class linearGradientWrapper:
             time.sleep(self.TIMER_CONSTANT)
         pass
 
-    def cycle(self, totalcycletime):
+    def cycle(self,totalcycletime):
         print("Linear Gradient Wrapper: executing a cyclical gradient")
         #Append the first color so that the cyclical gradient is linear.
         self.initColorList.append(self.initColorList[0])
         init = self.getArgs()
         next = lg.getColorList(init)
-        steptime = totalcycletime/60
 
         while(True):
             next = gh.getShiftedColors(next)
             lg.led_output(next)
-            time.sleep(steptime)
+            time.sleep(totalcycletime/self.LED_CONSTANT)
         pass
 
 
