@@ -1,8 +1,10 @@
+from __future__ import division
 import nLevelLinearGradient as lg
 import gradientHelpers as gh
 import threading
 import time
 from appJar import gui
+
 
 class linearGradientWrapper:
 
@@ -47,6 +49,20 @@ class linearGradientWrapper:
             next = gh.getShiftedColors(next)
             lg.led_output(next)
             time.sleep(self.TIMER_CONSTANT)
+        pass
+
+    def cycle(self, totalcycletime):
+        print("Linear Gradient Wrapper: executing a cyclical gradient")
+        #Append the first color so that the cyclical gradient is linear.
+        self.initColorList.append(self.initColorList[0])
+        init = self.getArgs()
+        next = lg.getColorList(init)
+        steptime = totalcycletime/60
+
+        while(True):
+            next = gh.getShiftedColors(next)
+            lg.led_output(next)
+            time.sleep(steptime)
         pass
 
 
