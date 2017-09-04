@@ -39,17 +39,7 @@ class linearGradientWrapper:
         return list
 
     def cycle(self):
-        print("Linear Gradient Wrapper: executing a cyclical gradient")
-        #Append the first color so that the cyclical gradient is linear.
-        self.initColorList.append(self.initColorList[0])
-        init = self.getArgs()
-        next = lg.getColorList(init)
-
-        while(True):
-            next = gh.getShiftedColors(next)
-            lg.led_output(next)
-            time.sleep(self.TIMER_CONSTANT)
-        pass
+        cycle(self.TIMER_CONSTANT)
 
     def cycle(self,totalcycletime):
         print("Linear Gradient Wrapper: executing a cyclical gradient")
