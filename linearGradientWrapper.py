@@ -3,6 +3,14 @@ import nLevelLinearGradient as lg
 import gradientHelpers as gh
 import threading
 import time
+import sys
+
+if __name__ == '__main__':
+    lg.display(sys.argv[1:])
+
+
+
+
 from appJar import gui
 
 class linearGradientWrapper:
