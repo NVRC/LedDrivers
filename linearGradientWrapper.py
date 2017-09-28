@@ -24,6 +24,10 @@ class linearGradientWrapper:
         self.initColorList.append(hex)
         pass
 
+    def addArray(self, array):
+        self.initColorList = array;
+        pass
+
 
     def setBrightness(self, brightness):
         self.brightness = brightness
