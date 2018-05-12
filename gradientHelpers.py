@@ -33,7 +33,7 @@ def getShiftedColors(colors):
 
 def getCrossColors(colors, period):
     temp = nllg.linear_gradient(colors[59],colors[0],60)
-    columns = period*60
+    columns = int(period,10)*60
     colorMatrix = [columns][60]
     for i in range(0,60):
         temp1 = colors[i]
