@@ -3,7 +3,7 @@ import nLevelLinearGradient as lg
 
 if __name__ == '__main__':
     import sys
-    color = [2]
+    color = []
     color[0] = '#'+sys.argv[1]
     color[1] = '#'+sys.argv[2]
     period = int(sys.argv[3],10)
