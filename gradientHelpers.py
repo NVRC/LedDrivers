@@ -1,4 +1,5 @@
 from collections import deque
+import nLevelLinearGradient as nllg
 
 def hex_to_rgb(value):
     """Return (red, green, blue) for the color given as #rrggbb."""
@@ -29,6 +30,20 @@ def hex_to_rgb_list(colors):
 
 def getShiftedColors(colors):
     return rotate(colors, 1)
+
+def getCrossColors(colors, period):
+    temp = nllg.linear_gradient(colors[59],colors[0],60)
+    columns = period*60
+    colorMatrix = [columns][60]
+    for i in range(0,60):
+        temp1 = colors[i]
+        temp2 = temp[i]
+        cross = nllg.linear_gradient(temp1, temp2,columns)
+        for x in range(0,columns):
+            colorMatrix[x][i] = cross[x]
+    return colorMatrix
+
+
 
 
 def rotate(l, n):
