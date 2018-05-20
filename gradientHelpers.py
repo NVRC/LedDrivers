@@ -21,6 +21,22 @@ def rgb_to_hex_list(colors):
 
     return hex_list
 
+def dotstarlib_correction(color):
+    """
+    The Adafruit_DotStar library for some , I'm sure, mundanely disinteresting
+    reason has swapped the R and G values when invoking "strip.setPixelColor()".
+
+    This simply swaps the appropriate segments. #RRGGBB -> #GGRRBB
+    """
+    def swap(s, i, j):
+        lst = list(s);
+        lst[i], lst[j] = lst[j], lst[i]
+        return ''.join(lst)
+
+    corrected_color = swap(color,2,4)
+    return swap(corrected_color,3,5)
+
+
 def hex_to_rgb_list(colors):
     rgb_list = []
     for color in colors:
@@ -33,7 +49,7 @@ def getShiftedColors(colors):
 
 def getCrossColors(colors, period):
     temp = nllg.linear_gradient(colors[59],colors[0],60)
-    columns = int(period,10)*60
+    columns = period*60
     colorMatrix = [columns][60]
     for i in range(0,60):
         temp1 = colors[i]
