@@ -33,8 +33,8 @@ def dotstarlib_correction(color):
         lst[i], lst[j] = lst[j], lst[i]
         return ''.join(lst)
 
-    corrected_color = swap(color,3,5)
-    return swap(corrected_color,4,6)
+    corrected_color = swap(color,2,4)
+    return swap(corrected_color,3,5)
 
 
 def hex_to_rgb_list(colors):
