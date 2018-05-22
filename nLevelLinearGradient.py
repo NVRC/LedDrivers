@@ -33,8 +33,8 @@ def dotstarlib_correction(color):
         lst[i], lst[j] = lst[j], lst[i]
         return ''.join(lst)
 
-    corrected_color = swap(color,1,3)
-    return swap(corrected_color,2,4)
+    corrected_color = swap(color,0,2)
+    return swap(corrected_color,1,3)
 
 def led_output(color_list):
     """ Sets every LED in the strip to it's list mapped color.
