@@ -28,7 +28,7 @@ class Audio:
         inp = alsaaudio.PCM(alsaaudio.PCM_CAPTURE, alsaaudio.PCM_NORMAL,
                             alsaaudio.pcms()[2])
         inp.setchannels(2)
-        inp.setrate(int(self.__rate))
+        inp.setrate(self.__rate
         inp.setformat(alsaaudio.PCM_FORMAT_S16_LE)
         inp.setperiodsize(int(self.__rate / 50))
 
@@ -44,7 +44,7 @@ class Audio:
         outp = alsaaudio.PCM(alsaaudio.PCM_PLAYBACK, alsaaudio.PCM_NORMAL,
                              alsaaudio.pcms()[2])
         outp.setchannels(2)
-        outp.setrate(int(self.__rate))
+        outp.setrate(self.__rate)
         outp.setformat(alsaaudio.PCM_FORMAT_S16_LE)
         outp.setperiodsize(int(self.__rate / 50))
 
