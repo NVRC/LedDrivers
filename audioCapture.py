@@ -42,7 +42,7 @@ class Audio:
     """
     def __write(self):
         outp = alsaaudio.PCM(alsaaudio.PCM_PLAYBACK, alsaaudio.PCM_NORMAL,
-                             alsaaudio.pcms()[7]))
+                             alsaaudio.pcms()[7])
         outp.setchannels(2)
         outp.setrate(int(self.__rate))
         outp.setformat(alsaaudio.PCM_FORMAT_S16_LE)
