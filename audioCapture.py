@@ -126,25 +126,25 @@ while True:
     pdata = audio.pseudonymize(data)
 
     if debug:
-        print "[PRE-PSEUDONYMIZED] Min: " + str(np.min(pdata)) + ", Max: " + str(np.max(pdata))
+        print("[PRE-PSEUDONYMIZED] Min: " + str(np.min(pdata)) + ", Max: " + str(np.max(pdata)))
 
     ndata = audio.normalize(pdata, 0xffffffff)
 
     if debug:
-        print "[PRE-NORMALIZED] Min: " + str(np.min(ndata)) + ", Max: " + str(np.max(ndata))
-        print "[PRE-NORMALIZED] Level: " + str(int(10.0 * np.log10(np.max(np.absolute(ndata)))))
+        print("[PRE-NORMALIZED] Min: " + str(np.min(ndata)) + ", Max: " + str(np.max(ndata)))
+        print("[PRE-NORMALIZED] Level: " + str(int(10.0 * np.log10(np.max(np.absolute(ndata))))))
 
     #ndata += 0.01 # When I comment in this line, it wreaks complete havoc!
 
     if debug:
-        print "[POST-NORMALIZED] Level: " + str(int(10.0 * np.log10(np.max(np.absolute(ndata)))))
-        print "[POST-NORMALIZED] Min: " + str(np.min(ndata)) + ", Max: " + str(np.max(ndata))
+        print("[POST-NORMALIZED] Level: " + str(int(10.0 * np.log10(np.max(np.absolute(ndata))))))
+        print("[POST-NORMALIZED] Min: " + str(np.min(ndata)) + ", Max: " + str(np.max(ndata)))
 
     pdata = audio.denormalize(ndata, 0xffffffff)
 
     if debug:
-        print "[POST-PSEUDONYMIZED] Min: " + str(np.min(pdata)) + ", Max: " + str(np.max(pdata))
-        print ""
+        print("[POST-PSEUDONYMIZED] Min: " + str(np.min(pdata)) + ", Max: " + str(np.max(pdata)))
+        print("")
 
     data = audio.depseudonymize(pdata)
     audio.write(data)
