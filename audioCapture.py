@@ -25,7 +25,8 @@ class Audio:
     Supposed to run in its own process.
     """
     def __read(self):
-        inp = alsaaudio.PCM(alsaaudio.PCM_CAPTURE, alsaaudio.PCM_NORMAL)
+        inp = alsaaudio.PCM(alsaaudio.PCM_CAPTURE, alsaaudio.PCM_NORMAL,
+                            'plughw:CARD=sndrpijustboomd,DEV=0')
         inp.setchannels(1)
         inp.setrate(int(self.__rate))
         inp.setformat(alsaaudio.PCM_FORMAT_S16_LE)
@@ -40,7 +41,8 @@ class Audio:
     Supposed to run in its own process.
     """
     def __write(self):
-        outp = alsaaudio.PCM(alsaaudio.PCM_PLAYBACK, alsaaudio.PCM_NORMAL)
+        outp = alsaaudio.PCM(alsaaudio.PCM_PLAYBACK, alsaaudio.PCM_NORMAL,
+                             'plughw:CARD=sndrpijustboomd,DEV=0')
         outp.setchannels(1)
         outp.setrate(int(self.__rate))
         outp.setformat(alsaaudio.PCM_FORMAT_S16_LE)
