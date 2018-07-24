@@ -26,7 +26,7 @@ class Audio:
     """
     def __read(self):
         inp = alsaaudio.PCM(alsaaudio.PCM_CAPTURE, alsaaudio.PCM_NORMAL,
-                            "plughw:CARD=sndrpijustboomd")
+                            alsaaudio.pcms()[2])
         inp.setchannels(2)
         inp.setrate(int(self.__rate))
         inp.setformat(alsaaudio.PCM_FORMAT_S16_LE)
@@ -42,7 +42,7 @@ class Audio:
     """
     def __write(self):
         outp = alsaaudio.PCM(alsaaudio.PCM_PLAYBACK, alsaaudio.PCM_NORMAL,
-                             "plughw:CARD=sndrpijustboomd")
+                             alsaaudio.pcms()[2])
         outp.setchannels(2)
         outp.setrate(int(self.__rate))
         outp.setformat(alsaaudio.PCM_FORMAT_S16_LE)
