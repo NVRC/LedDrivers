@@ -26,7 +26,7 @@ class Audio:
     """
     def __read(self):
         inp = alsaaudio.PCM(alsaaudio.PCM_CAPTURE, alsaaudio.PCM_NORMAL,
-                            alsaaudio.pcms()[3])
+                            "iec958:CARD=sndrpijustboomd")
         inp.setchannels(2)
         inp.setrate(self.__rate)
         inp.setformat(alsaaudio.PCM_FORMAT_S16_LE)
