@@ -12,8 +12,9 @@ class Audio:
     Initialize the audio buffer.
     """
     def __init__(self):
-        self.__rate = 96000
+        #self.__rate = 96000
         #self.__rate = 8000
+        self.__rate = 48000
         self.__stride = 4
         self.__pre_post = 4
         self.__read_queue = Queue()
@@ -41,7 +42,7 @@ class Audio:
     def __write(self):
         outp = alsaaudio.PCM(alsaaudio.PCM_PLAYBACK, alsaaudio.PCM_NORMAL)
         outp.setchannels(1)
-        outp.setrate(self.__rate)
+        outp.setrate(int(self.__rate))
         outp.setformat(alsaaudio.PCM_FORMAT_U32_BE)
         outp.setperiodsize(int(self.__rate / 50))
 
