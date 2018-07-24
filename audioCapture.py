@@ -25,7 +25,8 @@ class Audio:
     Supposed to run in its own process.
     """
     def __read(self):
-        inp = alsaaudio.PCM(alsaaudio.PCM_CAPTURE, alsaaudio.PCM_NORMAL)
+        inp = alsaaudio.PCM(alsaaudio.PCM_CAPTURE, alsaaudio.PCM_NORMAL,
+                            "plughw:CARD=Microphone")
         inp.setchannels(2)
         inp.setrate(self.__rate)
         inp.setformat(alsaaudio.PCM_FORMAT_S16_LE)
