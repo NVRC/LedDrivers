@@ -27,7 +27,7 @@ class Audio:
     def __read(self):
         inp = alsaaudio.PCM(alsaaudio.PCM_CAPTURE, alsaaudio.PCM_NORMAL)
         inp.setchannels(1)
-        inp.setrate(self.__rate)
+        inp.setrate(int(self.__rate))
         inp.setformat(alsaaudio.PCM_FORMAT_U32_BE)
         inp.setperiodsize(int(self.__rate / 50))
 
