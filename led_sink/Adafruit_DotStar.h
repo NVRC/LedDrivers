@@ -93,3 +93,4 @@ class Adafruit_DotStar {
 };
 
 #endif // _ADAFRUIT_DOT_STAR_H_
+

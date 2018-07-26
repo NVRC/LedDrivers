@@ -406,3 +406,4 @@ uint8_t Adafruit_DotStar::sine8(uint8_t x) const {
 uint8_t Adafruit_DotStar::gamma8(uint8_t x) const {
   return pgm_read_byte(&_gammaTable[x]); // 0-255 in, 0-255 out
 }
+

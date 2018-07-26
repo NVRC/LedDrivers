@@ -39,36 +39,47 @@ void setup(){
 
 
 uint32_t color = 0xFF0000;      // 0xFF0000 'On' color (starts red)
-unsigned char charArray[HEX_SIZE*BLOCK_SIZE];
+unsigned char charArray[HEX_SIZE*BLOCK_SIZE+2];
+char terminator = '\n';
 uint8_t rgb[3];
 // Testing
 // 0
 // 00FF0000FF0000FF0000FF0000FF0000FF0000FF0000FF0000FF0000FF00
 
 void loop(){
-    if (Serial.available() == 1){  //Looking for incoming data
-        char anim_flag;
-        size_t bytes_read = Serial.readBytes(&anim_flag, CMD_LENGTH);
-        Serial.println("Checking flag");
-
-        if(anim_flag == '0'){
-            while(Serial.available() < 2){
+    while(Serial.available() < 3){
+    
+    }
+    if (Serial.available() >= 3){  //Looking for incoming data
+        char anim_flag[3];
+        size_t bytes_read = Serial.readBytesUntil(terminator,anim_flag,CMD_LENGTH+2);
+        Serial.println(bytes_read,DEC);
+        if(anim_flag[1] == '0'){
+            Serial.println("cmd passed");
+            while(Serial.available() < 4){
                 //    BLOCK
+                
             }
-            char brightness[2];
-            bytes_read = Serial.readBytes(brightness,2);
+
+            char brightness[4];
+            bytes_read = Serial.readBytesUntil(terminator,brightness,4);
+            Serial.println(bytes_read,DEC);
             char* temp = brightness;
             uint8_t b = charToHex(*temp) << 4 | charToHex(*(temp+1));
-            Serial.println(b,DEC);
+            
+
             strip.setBrightness(b);
+            Serial.println(b,DEC);
             for(int k = 0; k < NUM_LEDS/BLOCK_SIZE; k++){
                 //  64 bytes in the stream 60 int div 6 = 10
-                while(Serial.available() < BLOCK_SIZE*HEX_SIZE){
+                while(Serial.available() < BLOCK_SIZE*HEX_SIZE+2){
                   //  BLOCK
                 }
-                if(Serial.available() >= BLOCK_SIZE*HEX_SIZE){
-                    bytes_read = Serial.readBytes(charArray,HEX_SIZE*BLOCK_SIZE);
+                if(Serial.available() >= BLOCK_SIZE*HEX_SIZE+2){
+                    bytes_read = Serial.readBytesUntil(terminator,charArray,BLOCK_SIZE*HEX_SIZE+2);
+                    Serial.println(bytes_read,DEC);
                     char* ptr = charArray;
+                    ptr += 1;
                     for(uint8_t j = 0; j < BLOCK_SIZE; j++){
                           for(int i = 0; i < 3; i++){
                               rgb[i] = charToHex(*ptr) << 4 | charToHex(*(ptr+1));
@@ -76,8 +87,9 @@ void loop(){
                           }
 
                           strip.setPixelColor(j+10*k,rgb[1],rgb[0],rgb[2]);
-                      }
-
+                     }
+                     
+                     Serial.println("block passed");
                  }
              }
              strip.show();
@@ -95,5 +107,6 @@ uint8_t charToHex(unsigned char value)
   if (value >= '0' && value <= '9') return value - '0';
   else if (value >= 'A' && value <= 'F') return value - 'A' + 10;
   else if (value >= 'a' && value <= 'f') return value - 'a' + 10;
-
 }
+
+
