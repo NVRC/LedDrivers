@@ -5,7 +5,7 @@
 //#include <avr/power.h> // ENABLE THIS LINE FOR GEMMA OR TRINKET
 const int HEX_SIZE = 6;
 const int NUM_LEDS = 60;
-byte numChars = 64;
+int numChars = NUM_LEDS*HEX_SIZE;
 char receivedChars[NUM_LEDS*HEX_SIZE];
 const byte CMD = 0;
 const byte BRIGHTNESS = 1;
@@ -13,9 +13,10 @@ const byte COLORS = 2;
 byte state = CMD;
 
 //  Vars
-char* ptr = receivedChars;
+char* ptr;
 uint8_t b;
 uint8_t rgb[3];
+int currBlock = 0;
 
 
 
@@ -23,6 +24,7 @@ uint8_t rgb[3];
 #define DATAPIN    4
 #define CLOCKPIN   5
 #define offset     1
+
 Adafruit_DotStar strip = Adafruit_DotStar(
   NUM_LEDS, DATAPIN, CLOCKPIN, DOTSTAR_BRG);
 
@@ -46,7 +48,7 @@ void loop() {
 
 void recvWithStartEndMarkers() {
     static boolean recvInProgress = false;
-    static byte ndx = 0;
+    static int ndx = 0;
     char startMarker = '<';
     char endMarker = '>';
     char rc;
@@ -82,19 +84,19 @@ void recvWithStartEndMarkers() {
 
 void parseNewData() {
     if (newData == true) {
-        Serial.println(receivedChars);
+        ptr = receivedChars;
         switch(state){
             case CMD:
                 if (receivedChars[0] == '0'){
                     state++;
-                    Serial.println(state);
+
                 } else {
                     // Handle other cmdss
                 }
                 break;
             case BRIGHTNESS:
                 b = charToHex(*ptr) << 4 | charToHex(*(ptr+1));
-                Serial.println(b,DEC);
+
                 strip.setBrightness(b);
                 state++;
                 break;
@@ -104,9 +106,7 @@ void parseNewData() {
                         rgb[i] = charToHex(*ptr) << 4 | charToHex(*(ptr+1));
                         ptr += 2;
                      }
-                     Serial.println(rgb[0],DEC);
-                     Serial.println(rgb[1],DEC);
-                     Serial.println(rgb[2],DEC);
+                    
                      strip.setPixelColor(j,rgb[1],rgb[0],rgb[2]);
                 }
                 strip.show();
