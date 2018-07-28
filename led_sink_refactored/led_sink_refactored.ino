@@ -18,6 +18,12 @@ uint8_t b;
 uint8_t rgb[3];
 int currBlock = 0;
 
+    static boolean recvInProgress = false;
+    static int ndx = 0;
+    char startMarker = '<';
+    char endMarker = '>';
+    char rc;
+
 
 
 
@@ -32,7 +38,6 @@ boolean newData = false;
 
 void setup() {
     Serial.begin(9600);
-    Serial.println("<Arduino is ready>");
     #if defined(__AVR_ATtiny85__) && (F_CPU == 16000000L)
         clock_prescale_set(clock_div_1); // Enable 16 MHz on Trinket
     #endif
@@ -47,11 +52,7 @@ void loop() {
 }
 
 void recvWithStartEndMarkers() {
-    static boolean recvInProgress = false;
-    static int ndx = 0;
-    char startMarker = '<';
-    char endMarker = '>';
-    char rc;
+
 
     
 
@@ -83,12 +84,14 @@ void recvWithStartEndMarkers() {
 }
 
 void parseNewData() {
+ 
     if (newData == true) {
         ptr = receivedChars;
         switch(state){
             case CMD:
                 if (receivedChars[0] == '0'){
                     state++;
+                  
 
                 } else {
                     // Handle other cmdss
