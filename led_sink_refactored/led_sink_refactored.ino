@@ -89,9 +89,7 @@ void pushToStrip(char* pointer){
             rgb[i] = charToHex(*ptr) << 4 | charToHex(*(ptr+1));
             ptr += 2;
          }
-         leds[j].red = rgb[0];
-         leds[j].green = rgb[1];
-         leds[j].blue = rgb[2];
+         leds[j] = CRGB( rgb[0], rgb[1], rgb[2]);
     }
     FastLED.show();
 }
@@ -150,7 +148,7 @@ void parseNewData() {
             case BRIGHTNESS:
                 b = charToHex(*ptr) << 4 | charToHex(*(ptr+1));
 
-                strip.setBrightness(b);
+                FastLED.setBrightness(b);
                 recvState++;
                 break;
             case COLORS:
