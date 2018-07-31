@@ -1,10 +1,8 @@
-#include <FastLED.h>
-#include "Adafruit_DotStar.h"
+#include "FastLED.h"
 // Because conditional #includes don't work w/Arduino sketches...
-#include <SPI.h>         // COMMENT OUT THIS LINE FOR GEMMA OR TRINKET
 //#include <avr/power.h> // ENABLE THIS LINE FOR GEMMA OR TRINKET
 const int HEX_SIZE = 6;
-const int NUM_LEDS = 60;
+#define NUM_LEDS 60
 int numChars = NUM_LEDS*HEX_SIZE;
 char receivedChars[NUM_LEDS*HEX_SIZE];
 char colorArray[NUM_LEDS*HEX_SIZE];
@@ -47,9 +45,10 @@ boolean newData = false;
 
 unsigned long currentMillis;
 unsigned long previousMillis = 0;
-const long interval = 500; //ms
+const long interval = 200; //ms
 
 void setup() {
+
     Serial.begin(9600);
     FastLED.addLeds<DOTSTAR, DATAPIN, CLOCKPIN, RGB>(leds, NUM_LEDS);
 
@@ -89,7 +88,9 @@ void pushToStrip(char* pointer){
             rgb[i] = charToHex(*ptr) << 4 | charToHex(*(ptr+1));
             ptr += 2;
          }
-         leds[j] = CRGB( rgb[0], rgb[1], rgb[2]);
+         //CRGB color = CRGB(rgb[0],rgb[1],rgb[2]);
+
+         leds[j].setRGB(rgb[2],rgb[1],rgb[0]);
     }
     FastLED.show();
 }
@@ -125,7 +126,6 @@ void recvWithStartEndMarkers() {
 void parseNewData() {
 
     if (newData == true) {
-      Serial.println(receivedChars);
         ptr = receivedChars;
         switch(recvState){
             case CMD:
