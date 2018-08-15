@@ -5,7 +5,7 @@
 //#include <avr/power.h> // ENABLE THIS LINE FOR GEMMA OR TRINKET
 const int HEX_SIZE = 6;
 const int NUM_LEDS = 60;
-int numChars = NUM_LEDS*HEX_SIZE;
+int numChars = NUM_LEDS*HEX_SIZE-1;
 char receivedChars[NUM_LEDS*HEX_SIZE];
 const byte CMD = 0;
 const byte BRIGHTNESS = 1;
@@ -18,11 +18,11 @@ uint8_t b;
 uint8_t rgb[3];
 int currBlock = 0;
 
-    static boolean recvInProgress = false;
-    static int ndx = 0;
-    char startMarker = '<';
-    char endMarker = '>';
-    char rc;
+static boolean recvInProgress = false;
+static int ndx = 0;
+char startMarker = '<';
+char endMarker = '>';
+char rc;
 
 
 
@@ -41,12 +41,13 @@ void setup() {
     #if defined(__AVR_ATtiny85__) && (F_CPU == 16000000L)
         clock_prescale_set(clock_div_1); // Enable 16 MHz on Trinket
     #endif
+    Serial.println("Setup");
 
     strip.begin(); // Initialize pins for output
-    strip.show();  // Turn all LEDs off ASAP
 }
 
 void loop() {
+
     recvWithStartEndMarkers();
     parseNewData();
 }
