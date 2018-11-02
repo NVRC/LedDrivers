@@ -20,18 +20,38 @@ struct led {
     uint8_t index;
     struct colorRGB color;
 };
-
+//  LED pointer array for indexed accessing
+//  Allocated array of pointers where each element points to a 'struct led'
+struct led *ledPtrs[NUM_LEDS];
 /*
     Ring Buffer dynamic memory (RAM) demands
-    
-  
+        ** assuming unint8_t = 1 word = 1 byte = 8 bits = 2^8 = 256 states
+
+    Therefore,
+        colorRGB: 3 bytes
+        led:
+            1 bytes +
+            3 bytes
+            -------
+            4 bytes
+
+        leds:
+            led * NUM_LEDS
+            4 * 60 = 240 bytes
+
+        struct pointer array:
+            int * NUM_LEDS
+            2 * 60 = 120 bytes
+
+        total:
+            leds + pointers
+            240 + 120 = 360 bytes
 */
 
 
 
 //  Init Properly sized ring buffer
 RingBuf *ledBuffer = RingBuf_new(sizeof(struct led), NUM_LEDS);
-
 
 
 //  State constants
@@ -74,8 +94,17 @@ unsigned long currentMillis;
 unsigned long previousMillis = 0;
 const long interval = 200; // ms
 
+
+struct led *(*ledRef)[NUM_LEDS] = &ledPtrs;
 void setup() {
     Serial.begin(9600);
+    for (uint8_t i = 0; i < NUM_LEDS; i++){
+        //  allocate and assign pointers to NUM_LEDS structs
+        ledPtrs[i] = malloc(sizeof(struct led));
+    }
+    //  declare pointer to ledPtrs array
+    //  enables the use of (*ledRef)[n]->data to reference the n-th elem
+    
 
     strip.begin(); // Initialize pins for output
 }
@@ -98,10 +127,6 @@ void loop() {
 }
 
 void recvWithStartEndMarkers() {
-
-
-
-
     while (Serial.available() > 0 && newData == false) {
         rc = Serial.read();
 
@@ -129,8 +154,19 @@ void recvWithStartEndMarkers() {
 
 }
 
-void parseNewData() {
+void pushToStrip(){
+    //  forEach elem in circular buffer
+    for(uint8_t i = 0; i<NUM_LEDS; i++){
+        strip.setPixelColor(i,(*ledRef)[i]->color.g,
+            (*ledRef)[i]->color.r,
+            (*ledRef)[i]->color.b);
+    }
+    strip.show();
 
+
+}
+
+void parseNewData() {
     if (newData == true) {
         ptr = receivedChars;
         switch(state){
@@ -162,10 +198,13 @@ void parseNewData() {
                         rgb[i] = charToHex(*ptr) << 4 | charToHex(*(ptr+1));
                         ptr += 2;
                      }
-
-                     strip.setPixelColor(j,rgb[1],rgb[0],rgb[2]);
+                     (*ledRef)[j]->index = j;
+                     (*ledRef)[j]->color.r = rgb[0];
+                     (*ledRef)[j]->color.g = rgb[1];
+                     (*ledRef)[j]->color.b = rgb[2];
+                     ledBuffer->add(ledBuffer, &(*ledRef)[j]);
                 }
-                strip.show();
+                pushToStrip();
                 state = CMD;
                 break;
         }
