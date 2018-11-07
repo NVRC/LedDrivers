@@ -20,6 +20,14 @@ struct led {
     uint8_t index;
     struct colorRGB color;
 };
+
+typedef struct {
+    uint8_t currHead;
+    byte anim;
+}State;
+State currState;
+
+
 //  LED pointer array for indexed accessing
 //  Allocated array of pointers where each element points to a 'struct led'
 struct led *ledPtrs[NUM_LEDS];
@@ -50,7 +58,7 @@ struct led *ledPtrs[NUM_LEDS];
 
 
 
-//  Init Properly sized ring buffer
+//  Init properly sized ring buffer
 RingBuf *ledBuffer = RingBuf_new(sizeof(struct led), NUM_LEDS);
 
 
@@ -94,18 +102,24 @@ unsigned long currentMillis;
 unsigned long previousMillis = 0;
 const long interval = 200; // ms
 
-
+//  declare pointer to ledPtrs array
+//  enables the use of (*ledRef)[n]->data to reference the n-th elem
 struct led *(*ledRef)[NUM_LEDS] = &ledPtrs;
+
+String inString = "";
+char *strPtr;
+
 void setup() {
     Serial.begin(9600);
+
+
+    currState.currHead = 0;
+    currState.anim = 0;
+
     for (uint8_t i = 0; i < NUM_LEDS; i++){
         //  allocate and assign pointers to NUM_LEDS structs
         ledPtrs[i] = malloc(sizeof(struct led));
     }
-    //  declare pointer to ledPtrs array
-    //  enables the use of (*ledRef)[n]->data to reference the n-th elem
-    
-
     strip.begin(); // Initialize pins for output
 }
 
@@ -119,11 +133,23 @@ void loop() {
         if (currentMillis - previousMillis >= rate) {
             // save the current time
             previousMillis = currentMillis;
+            if(currState.anim == CYCLE){
+                shiftColors();
 
+            }
             // Output next color
+            pushToStrip();
         }
     }
 
+}
+
+void shiftColors(){
+    if(currState.currHead < NUM_LEDS - 1){
+        currState.currHead += 1;
+    } else {
+        currState.currHead = 0;
+    }
 }
 
 void recvWithStartEndMarkers() {
@@ -155,11 +181,17 @@ void recvWithStartEndMarkers() {
 }
 
 void pushToStrip(){
+    uint8_t head = currState.currHead;
     //  forEach elem in circular buffer
     for(uint8_t i = 0; i<NUM_LEDS; i++){
-        strip.setPixelColor(i,(*ledRef)[i]->color.g,
-            (*ledRef)[i]->color.r,
-            (*ledRef)[i]->color.b);
+        strip.setPixelColor(i,(*ledRef)[head]->color.g,
+            (*ledRef)[head]->color.r,
+            (*ledRef)[head]->color.b);
+        if(head == NUM_LEDS - 1){
+            head = 0;
+        } else {
+            head++;
+        }
     }
     strip.show();
 
@@ -176,6 +208,9 @@ void parseNewData() {
                     state = BRIGHTNESS;
                 // 2D circular cycling animation
                 } else if (receivedChars[0] == '1'){
+                    currState.anim = CYCLE;
+                    Serial.println("Setting state to rate");
+
                     state = RATE;
 
                 }else {
@@ -183,14 +218,19 @@ void parseNewData() {
                 }
                 break;
             case RATE:
-                rate = (int)atoi(ptr);
+                rate = strtol(receivedChars, &strPtr, 10);
+                Serial.println(rate);
+                Serial.println("Setting state to brightness");
                 state = BRIGHTNESS;
                 break;
             case BRIGHTNESS:
                 b = charToHex(*ptr) << 4 | charToHex(*(ptr+1));
 
                 strip.setBrightness(b);
-                state++;
+                Serial.println(b);
+                Serial.println("Setting state to color");
+
+                state = COLORS;
                 break;
             case COLORS:
                 for(uint8_t j = 0; j < NUM_LEDS; j++){
@@ -206,6 +246,8 @@ void parseNewData() {
                 }
                 pushToStrip();
                 state = CMD;
+                Serial.println("Setting state to CMD");
+
                 break;
         }
 
